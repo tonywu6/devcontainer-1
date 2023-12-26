@@ -29,6 +29,15 @@ jobs:
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
 
+      # https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}-${{ matrix.platform }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -51,8 +60,8 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           # https://docs.docker.com/build/ci/github-actions/multi-platform/
           outputs: type=image,name=${{env.REGISTRY}}/${{env.IMAGE_NAME}},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=${{env.REGISTRY}}/${{env.IMAGE_NAME}}:cache-${{matrix.platform}}
-          cache-to: type=registry,ref=${{env.REGISTRY}}/${{env.IMAGE_NAME}}:cache-${{matrix.platform}},mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Export digest
         run: |
@@ -67,6 +76,11 @@ jobs:
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   merge-manifests:
     runs-on: ubuntu-latest
