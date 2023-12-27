@@ -1,14 +1,31 @@
-FROM rust:bookworm as tools
+FROM --platform=$BUILDPLATFORM rust:bookworm as tools
 
 ARG FNM_VERSION=1.35.1
 ARG RYE_VERSION=0.16.0
+ARG RUST_TARGET=x86_64-unknown-linux-gnu
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y \
+    gcc-x86-64-linux-gnu \
+    gcc-aarch64-linux-gnu
+
+ENV HOST_CC=gcc
+ENV CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc
+ENV CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
+ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-linux-gnu-gcc
+ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
+
+RUN rustup target add ${RUST_TARGET}
 
 RUN cargo install --root /root/.cargo fnm \
-    --version ${FNM_VERSION}
+    --version ${FNM_VERSION} \
+    --target ${RUST_TARGET}
 
 RUN cargo install --root /root/.cargo rye \
     --git https://github.com/mitsuhiko/rye \
-    --tag ${RYE_VERSION}
+    --tag ${RYE_VERSION} \
+    --target ${RUST_TARGET}
 
 FROM mcr.microsoft.com/devcontainers/rust:bookworm
 
@@ -52,3 +69,5 @@ RUN echo "" >> $HOME/.zshrc \
     && echo "" >> $HOME/.zshrc
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
+
+LABEL org.opencontainers.image.description "Dev container image for Node + Python + Rust monorepos"

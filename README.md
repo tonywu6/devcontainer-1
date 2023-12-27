@@ -7,7 +7,7 @@ See [devcontainer.Dockerfile](./devcontainer.Dockerfile).
 Base image is [mcr.microsoft.com/devcontainers/rust:bookworm].
 
 [fnm] is the tool for Node, and [Rye] for Python. Both are built from scratch
-through `cargo install` in a separate build stage.
+through `cargo install` in a separate build stage (as an exercise).
 
 Default versions of Node and Python are installed. To override, set the
 `NODE_VERSION` and `PYTHON_VERSION` build args.

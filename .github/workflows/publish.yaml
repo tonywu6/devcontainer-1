@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{github.repository}}
 
 jobs:
   build:
@@ -20,9 +20,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
+        node:
+          - '18'
+          - '20'
+        python:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+        target:
+          - docker: linux/amd64
+            rust: x86_64-unknown-linux-gnu
+          - docker: linux/arm64
+            rust: aarch64-unknown-linux-gnu
 
     steps:
       - uses: actions/checkout@v4
@@ -35,28 +46,26 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}-${{ matrix.platform }}
+          key: ${{runner.os}}-buildx-${{matrix.target.docker}}-${{matrix.node}}-${{matrix.python}}-${{github.sha}}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{runner.os}}-buildx-${{matrix.target.docker}}-${{matrix.node}}-${{matrix.python}}-
 
       - uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: docker/metadata-action@v5
-        id: metadata
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          registry: ${{env.REGISTRY}}
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
       - uses: docker/build-push-action@v4
         id: build
         with:
           file: devcontainer.Dockerfile
           context: .
-          platforms: ${{ matrix.platform }}
-          labels: ${{ steps.metadata.outputs.labels }}
+          platforms: ${{matrix.target.docker}}
+          build-args: |
+            RUST_TARGET=${{matrix.target.rust}}
+            NODE_VERSION=${{matrix.node}}
+            PYTHON_VERSION=${{matrix.python}}
           # https://docs.docker.com/build/ci/github-actions/multi-platform/
           outputs: type=image,name=${{env.REGISTRY}}/${{env.IMAGE_NAME}},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -64,9 +73,9 @@ jobs:
 
       - name: Export digest
         run: |
-          mkdir -p /tmp/digests
-          digest="${{ steps.build.outputs.digest }}"
-          touch "/tmp/digests/${digest#sha256:}"
+          mkdir -p /tmp/digests/node${{matrix.node}}/python${{matrix.python}}
+          digest="${{steps.build.outputs.digest}}"
+          touch "/tmp/digests/node${{matrix.node}}/python${{matrix.python}}/${digest#sha256:}"
 
       - name: Upload digest
         uses: actions/upload-artifact@v3
@@ -91,6 +100,19 @@ jobs:
       contents: read
       packages: write
 
+    strategy:
+      fail-fast: false
+      matrix:
+        node:
+          - '18'
+          - '20'
+        python:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -102,23 +124,21 @@ jobs:
       - uses: docker/metadata-action@v5
         id: metadata
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
           tags: |
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+          flavor: |
+            latest=auto
+            suffix=node${{matrix.node}}-python${{matrix.python}}
 
       - uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{env.REGISTRY}}
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Create manifest list and push
-        working-directory: /tmp/digests
+        working-directory: /tmp/digests/node${{matrix.node}}/python${{matrix.python}}
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{env.REGISTRY}}/${{env.IMAGE_NAME}}@sha256:%s ' *)
-
-      - name: Inspect image
-        run: |
-          docker buildx imagetools inspect ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{steps.metadata.outputs.version}}
