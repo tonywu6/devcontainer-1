@@ -29,8 +29,6 @@ RUN cargo install --root /root/.cargo rye \
 
 FROM mcr.microsoft.com/devcontainers/rust:bookworm
 
-ARG NODE_VERSION=18.18
-ARG PYTHON_VERSION=3.8
 
 RUN apt-get update \
     && apt-get install -y \
@@ -46,6 +44,9 @@ COPY --from=tools /root/.cargo/bin/rye /usr/local/bin/rye
 # Default non-root user
 USER vscode
 WORKDIR /home/vscode
+
+ARG NODE_VERSION=18.18
+ARG PYTHON_VERSION=3.8
 
 # Install default Node
 RUN fnm install ${NODE_VERSION} \

@@ -46,9 +46,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{runner.os}}-buildx-${{matrix.target.docker}}-${{matrix.node}}-${{matrix.python}}-${{github.sha}}
+          key: ${{runner.os}}-buildx-${{matrix.target.docker}}-${{github.sha}}
           restore-keys: |
-            ${{runner.os}}-buildx-${{matrix.target.docker}}-${{matrix.node}}-${{matrix.python}}-
+            ${{runner.os}}-buildx-${{matrix.target.docker}}-
 
       - uses: docker/login-action@v3
         with:
@@ -96,6 +96,9 @@ jobs:
     needs:
       - build
 
+    if: |
+      needs.build.result == 'success'
+
     permissions:
       contents: read
       packages: write
@@ -129,7 +132,7 @@ jobs:
             type=semver,pattern={{version}}
           flavor: |
             latest=auto
-            suffix=node${{matrix.node}}-python${{matrix.python}}
+            suffix=-node${{matrix.node}}-python${{matrix.python}}
 
       - uses: docker/login-action@v3
         with:
