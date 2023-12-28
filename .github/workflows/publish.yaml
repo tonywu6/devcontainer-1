@@ -128,8 +128,8 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
           flavor: |
-            latest=auto
-            suffix=-node${{matrix.node}}-python${{matrix.python}}
+            latest=true
+            prefix=node${{matrix.node}}-py${{matrix.python}}-,onlatest=true
 
       - uses: docker/login-action@v3
         with:

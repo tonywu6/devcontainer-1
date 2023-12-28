@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:bookworm as tools
+FROM --platform=$BUILDPLATFORM rust:bookworm as tooling
 
 ARG FNM_VERSION=1.35.1
 ARG RYE_VERSION=0.16.0
@@ -45,33 +45,34 @@ RUN apt-get update \
 
 RUN chsh -s /usr/bin/zsh vscode
 
-COPY --from=tools /root/.cargo/bin/fnm /usr/local/bin/fnm
-COPY --from=tools /root/.cargo/bin/rye /usr/local/bin/rye
+COPY --from=tooling /root/.cargo/bin/fnm /usr/local/bin/fnm
+COPY --from=tooling /root/.cargo/bin/rye /usr/local/bin/rye
 
-# Default non-root user
+ARG NODE_VERSION=18
+ARG PYTHON_VERSION=3.8
+
 USER vscode
 WORKDIR /home/vscode
 
-ARG NODE_VERSION=18.18
-ARG PYTHON_VERSION=3.8
+ENV HOME=/home/vscode
+ENV FNM_DIR=${HOME}/.fnm
+ENV RYE_HOME=${HOME}/.rye
 
-# Install default Node
+ENV PATH=${FNM_DIR}/aliases/default/bin:${RYE_HOME}/shims:${HOME}/.cargo/bin:${HOME}/.local/bin:${PATH}
+
 RUN fnm install ${NODE_VERSION} \
     && fnm default ${NODE_VERSION}
 
-# Install default Python
 RUN rye self install --yes \
     && rye toolchain fetch ${PYTHON_VERSION}
 
-# Install pnpm and Nx
-RUN eval $(fnm env) \
-    && npm install -g pnpm nx
+RUN echo "" >> ${HOME}/.zshrc \
+    && echo 'eval "$(fnm env)"' >> ${HOME}/.zshrc \
+    && echo 'source "$HOME/.rye/env"' >> ${HOME}/.zshrc
 
-# Setup shell
-RUN echo "" >> $HOME/.zshrc \
-    && echo 'eval "$(fnm env)"' >> $HOME/.zshrc \
-    && echo 'source "$HOME/.rye/env"' >> $HOME/.zshrc \
-    && echo 'export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"' >> $HOME/.zshrc
+RUN npm install -g "pnpm@^8"
+
+WORKDIR /home/vscode/workspace
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
 
