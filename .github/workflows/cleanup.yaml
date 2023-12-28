@@ -1,0 +1,24 @@
+name: Clean up images
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: snok/container-retention-policy@v2
+        with:
+          image-names: ${{github.event.repository.name}}
+          cut-off: two hours ago UTC-4
+          timestamp-to-use: created_at
+          account-type: personal
+          token: ${{ secrets.GITHUB_TOKEN }}
+          token-type: github-token
+          untagged-only: true
+          skip-tags: '*-latest'
