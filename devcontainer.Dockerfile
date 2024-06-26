@@ -1,7 +1,7 @@
-FROM --platform=$BUILDPLATFORM rust:bookworm as tooling
+FROM --platform=${BUILDPLATFORM} rust:bookworm as tooling
 
-ARG FNM_VERSION=1.35.1
-ARG RYE_VERSION=0.16.0
+ARG FNM_VERSION=1.37.1
+ARG RYE_VERSION=0.35.0
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -17,30 +17,33 @@ ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
 
 ARG TARGETPLATFORM
 
-RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; \
+RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; \
     then echo aarch64-unknown-linux-gnu > .rust-target; \
-    elif [ "$TARGETPLATFORM" = "linux/amd64" ]; \
+    elif [ "${TARGETPLATFORM}" = "linux/amd64" ]; \
     then echo x86_64-unknown-linux-gnu > .rust-target; \
-    else echo "Unsupported arch: $TARGETPLATFORM"; exit 1; \
+    else echo "Unsupported arch: ${TARGETPLATFORM}"; exit 1; \
     fi
 
 RUN rustup target add $(cat .rust-target)
 
 RUN cargo install --root /root/.cargo fnm \
+    --git https://github.com/Schniz/fnm \
     --version ${FNM_VERSION} \
     --target $(cat .rust-target)
 
 RUN cargo install --root /root/.cargo rye \
-    --git https://github.com/mitsuhiko/rye \
+    --git https://github.com/astral-sh/rye \
     --tag ${RYE_VERSION} \
     --target $(cat .rust-target)
 
-FROM mcr.microsoft.com/devcontainers/rust:bookworm as devcontainer
+FROM --platform=${TARGETPLATFORM} mcr.microsoft.com/devcontainers/rust:bookworm as devcontainer
 
 RUN apt-get update \
     && apt-get install -y \
     sudo \
     curl \
+    cmake \
+    ninja-build \
     zsh
 
 RUN chsh -s /usr/bin/zsh vscode
@@ -48,8 +51,9 @@ RUN chsh -s /usr/bin/zsh vscode
 COPY --from=tooling /root/.cargo/bin/fnm /usr/local/bin/fnm
 COPY --from=tooling /root/.cargo/bin/rye /usr/local/bin/rye
 
-ARG NODE_VERSION=18
-ARG PYTHON_VERSION=3.8
+ARG NODE_VERSION=20
+ARG PYTHON_VERSION=3.12
+ARG PNPM_VERSION=9
 
 USER vscode
 WORKDIR /home/vscode
@@ -63,14 +67,15 @@ ENV PATH=${FNM_DIR}/aliases/default/bin:${RYE_HOME}/shims:${HOME}/.cargo/bin:${H
 RUN fnm install ${NODE_VERSION} \
     && fnm default ${NODE_VERSION}
 
-RUN rye self install --yes \
+RUN rye self install --yes --toolchain-version ${PYTHON_VERSION} \
     && rye toolchain fetch ${PYTHON_VERSION}
 
 RUN echo "" >> ${HOME}/.zshrc \
     && echo 'eval "$(fnm env)"' >> ${HOME}/.zshrc \
     && echo 'source "$HOME/.rye/env"' >> ${HOME}/.zshrc
 
-RUN npm install -g "pnpm@^8"
+RUN npm install -g "pnpm@^${PNPM_VERSION}"
+RUN SHELL=zsh pnpm setup
 
 WORKDIR /home/vscode/workspace
 

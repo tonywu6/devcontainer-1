@@ -3,7 +3,7 @@ name: Publish to GitHub Packages
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 env:
   REGISTRY: ghcr.io
@@ -21,14 +21,13 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '18'
-          - '20'
+          - "18"
+          - "20"
         python:
-          - '3.8'
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
         target:
           - linux/amd64
           - linux/arm64
@@ -104,14 +103,14 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '18'
-          - '20'
+          - "18"
+          - "20"
         python:
-          - '3.8'
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
 
     steps:
       - uses: actions/download-artifact@v3
