@@ -1,22 +1,8 @@
 {
   "build": {
     "context": "..",
-    "dockerfile": "../devcontainer.Dockerfile"
+    "dockerfile": "./Dockerfile"
   },
-  "mounts": [
-    {
-      "type": "volume",
-      "source": "${localWorkspaceFolderBasename}-node_modules",
-      "target": "${containerWorkspaceFolder}/node_modules"
-    },
-    {
-      "type": "volume",
-      "source": "${localWorkspaceFolderBasename}-virtualenv",
-      "target": "${containerWorkspaceFolder}/.venv"
-    }
-  ],
   "remoteUser": "vscode",
-  "containerUser": "vscode",
-  "postCreateCommand": "${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh",
-  "waitFor": "postCreateCommand"
+  "containerUser": "vscode"
 }
