@@ -21,4 +21,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           token-type: github-token
           untagged-only: true
-          skip-tags: '*-latest'
