@@ -31,12 +31,6 @@ RUN make zigbuild \
 COPY .devcontainer/make/rustc-target make/rustc-target
 RUN make rustc-target
 
-COPY .devcontainer/make/protoc make/protoc
-RUN make protoc
-
-COPY .devcontainer/make/deno make/deno
-RUN make deno
-
 COPY .devcontainer/make/fnm make/fnm
 RUN make fnm
 
@@ -92,6 +86,9 @@ RUN make buf
 COPY .devcontainer/make/micromamba make/micromamba
 RUN make micromamba
 
+COPY .devcontainer/make/deno make/deno
+RUN make deno
+
 COPY --from=cross /root/.cargo/bin/rye ${CARGO_HOME}/bin/rye
 
 ARG DEFAULT_PYTHON_VERSION
@@ -110,8 +107,6 @@ RUN make fnm-node
 COPY --from=cross /root/.cargo/bin/maturin ${CARGO_HOME}/bin/maturin
 
 COPY --from=cross /root/.cargo/bin/wasm-pack ${CARGO_HOME}/bin/wasm-pack
-
-COPY --from=cross /root/.cargo/bin/deno ${CARGO_HOME}/bin/deno
 
 RUN sudo rm -rf /tmp/*
 
