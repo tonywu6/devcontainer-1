@@ -45,7 +45,7 @@ jobs:
       matrix:
         preset: ${{fromJson(needs.matrix.outputs.builds)}}
 
-    name: Build ${{matrix.preset.name}}${{matrix.preset.suffix}}
+    name: Build ${{matrix.preset.name}} ${{matrix.preset.platform}}
 
     steps:
       - uses: actions/checkout@v4
