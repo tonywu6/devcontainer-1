@@ -1,12 +1,29 @@
-WASM_PACK_VERSION ?= 0.12.1
+WASM_PACK_VERSION ?= 0.13.0
 
 .PHONY: all
 all:
 
-	cargo install wasm-pack \
-		--version $(WASM_PACK_VERSION) \
-		--target $(RUST_TARGET)
+	git clone https://github.com/rustwasm/wasm-pack \
+		--branch v$(WASM_PACK_VERSION) \
+		--depth 1 \
+		/tmp/git/wasm-pack
 
-ifndef RUST_TARGET
-	$(error RUST_TARGET is not set)
+	cargo zigbuild \
+		--target $(ZIGBUILD_TARGET) \
+		--release \
+		--manifest-path /tmp/git/wasm-pack/Cargo.toml \
+		--bin wasm-pack
+
+	mv /tmp/git/wasm-pack/target/$(RUSTC_TARGET)/release/wasm-pack $(CARGO_HOME)/bin/wasm-pack
+
+ifndef RUSTC_TARGET
+	$(error RUSTC_TARGET is not set)
+endif
+
+ifndef ZIGBUILD_TARGET
+	$(error ZIGBUILD_TARGET is not set)
+endif
+
+ifndef CARGO_HOME
+	$(error CARGO_HOME is not set)
 endif

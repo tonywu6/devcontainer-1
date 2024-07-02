@@ -2,12 +2,12 @@ BAZELISK_VERSION ?= 1.20.0
 
 BAZELISK_BIN ?= /usr/local/bin
 
-ifeq ($(ARCH), linux/arm64)
+ifeq ($(TARGETPLATFORM), linux/arm64)
 	BAZELIST_ARCH = linux-arm64
-else ifeq ($(ARCH), linux/amd64)
+else ifeq ($(TARGETPLATFORM), linux/amd64)
 	BAZELIST_ARCH = linux-amd64
 else
-	$(error "unsupported ARCH=$(ARCH)")
+	$(error "unsupported platform $(TARGETPLATFORM)")
 endif
 
 .PHONY: all

@@ -1,11 +1,11 @@
 MICROMAMBA_VERSION ?= 1.5.8
 
-ifeq ($(ARCH), linux/arm64)
+ifeq ($(TARGETPLATFORM), linux/arm64)
 	MICROMAMBA_ARCH = linux-aarch64
-else ifeq ($(ARCH), linux/amd64)
+else ifeq ($(TARGETPLATFORM), linux/amd64)
 	MICROMAMBA_ARCH = linux-64
 else
-	$(error "unsupported ARCH=$(ARCH)")
+	$(error "unsupported platform $(TARGETPLATFORM)")
 endif
 
 .PHONY: all

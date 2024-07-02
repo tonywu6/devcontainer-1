@@ -5,6 +5,10 @@
 [Rust]: https://rustup.rs/
 [rust-bookworm]: https://mcr.microsoft.com/en-us/product/devcontainers/rust/tags
 
+- [Zig]
+
+[Zig]: https://ziglang.org/
+
 - [fnm]
 - [Node] [20](.devcontainer/make/node/Makefile)
 - [Deno]

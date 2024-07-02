@@ -1,13 +1,13 @@
 GO_VERSION ?= 1.22.4
 
-ifeq ($(ARCH), linux/arm64)
+ifeq ($(TARGETPLATFORM), linux/arm64)
 	GOOS = linux
 	GOARCH = arm64
-else ifeq ($(ARCH), linux/amd64)
+else ifeq ($(TARGETPLATFORM), linux/amd64)
 	GOOS = linux
 	GOARCH = amd64
 else
-	$(error "unsupported ARCH=$(ARCH)")
+	$(error "unsupported platform $(TARGETPLATFORM)")
 endif
 
 .PHONY: all

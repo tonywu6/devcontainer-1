@@ -1,11 +1,11 @@
 PROTOC_VERSION ?= 25.3
 
-ifeq ($(ARCH), linux/arm64)
+ifeq ($(TARGETPLATFORM), linux/arm64)
 	PROTOC_ARCH = linux-aarch_64
-else ifeq ($(ARCH), linux/amd64)
+else ifeq ($(TARGETPLATFORM), linux/amd64)
 	PROTOC_ARCH = linux-x86_64
 else
-	$(error "unsupported ARCH=$(ARCH)")
+	$(error "unsupported platform $(TARGETPLATFORM)")
 endif
 
 .PHONY: all
