@@ -1,6 +1,7 @@
+ARG CROSSCOMPILE_IMAGE=rust:bookworm
 ARG DEVCONTAINER_IMAGE=mcr.microsoft.com/devcontainers/rust:bookworm
 
-FROM --platform=${BUILDPLATFORM} rust:bookworm AS cross
+FROM --platform=${BUILDPLATFORM} ${CROSSCOMPILE_IMAGE} AS cross
 
 WORKDIR /tmp
 
@@ -27,6 +28,9 @@ RUN make zig \
 COPY .devcontainer/make/zigbuild make/zigbuild
 RUN make zigbuild \
   TARGETPLATFORM=${BUILDPLATFORM}
+
+COPY .devcontainer/make/rustup make/rustup
+RUN make rustup
 
 COPY .devcontainer/make/rustc-target make/rustc-target
 RUN make rustc-target
