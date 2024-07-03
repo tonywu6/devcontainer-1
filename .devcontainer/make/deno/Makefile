@@ -1,7 +1,6 @@
 DENO_VERSION ?= v1.44.4
+DENO_INSTALL ?= $(CARGO_HOME)
 
 .PHONY: all
 all:
-	export DENO_INSTALL=$$CARGO_HOME
-
-	curl -fsSL https://deno.land/install.sh | sh -s -- $(DENO_VERSION)
+	curl -fsSL https://deno.land/install.sh | DENO_INSTALL=$(DENO_INSTALL) sh -s -- $(DENO_VERSION)

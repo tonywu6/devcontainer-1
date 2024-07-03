@@ -1,5 +1,7 @@
+task ?= all
+
 %:
-	$(MAKE) -C make/$@
+	$(MAKE) -C make/$@ $(task)
 
 TARGETPLATFORM ?= none
 

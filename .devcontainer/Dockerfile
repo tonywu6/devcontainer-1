@@ -31,11 +31,16 @@ RUN make zigbuild \
 COPY .devcontainer/make/rustc-target make/rustc-target
 RUN make rustc-target
 
+COPY .devcontainer/make/sccache make/sccache
+RUN make sccache
+
+ENV RUSTC_WRAPPER=sccache
+
 COPY .devcontainer/make/fnm make/fnm
 RUN make fnm
 
 COPY .devcontainer/make/rye make/rye
-RUN make rye
+RUN make rye task=build
 
 COPY .devcontainer/make/maturin make/maturin
 RUN make maturin
@@ -89,12 +94,14 @@ RUN make micromamba
 COPY .devcontainer/make/deno make/deno
 RUN make deno
 
+COPY --from=cross /root/.cargo/bin/uv ${CARGO_HOME}/bin/uv
+
 COPY --from=cross /root/.cargo/bin/rye ${CARGO_HOME}/bin/rye
 
 ARG DEFAULT_PYTHON_VERSION
 
-COPY .devcontainer/make/rye-install make/rye-install
-RUN make rye-install
+COPY .devcontainer/make/rye make/rye
+RUN make rye task=install
 
 COPY --from=cross /root/.cargo/bin/fnm ${CARGO_HOME}/bin/fnm
 

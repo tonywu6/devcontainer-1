@@ -1,3 +1,15 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/rust:bookworm"
+  "image": "mcr.microsoft.com/devcontainers/rust:bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.makefile-tools",
+        "yzhang.markdown-all-in-one"
+      ]
+    }
+  }
 }
