@@ -35,10 +35,10 @@ RUN make zigbuild \
 COPY .devcontainer/make/rustc-target make/rustc-target
 RUN make rustc-target
 
-# COPY .devcontainer/make/sccache make/sccache
-# RUN make sccache
+COPY .devcontainer/make/sccache make/sccache
+RUN make sccache
 
-# ENV RUSTC_WRAPPER=sccache
+ARG RUSTC_WRAPPER
 
 COPY .devcontainer/make/fnm make/fnm
 RUN make fnm
