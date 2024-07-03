@@ -21,6 +21,9 @@ ENV PATH=${CARGO_HOME}/bin:${PATH}
 
 ENV CI=true
 
+COPY .devcontainer/make/rustup make/rustup
+RUN make rustup
+
 COPY .devcontainer/make/zig make/zig
 RUN make zig \
   TARGETPLATFORM=${BUILDPLATFORM}
@@ -28,9 +31,6 @@ RUN make zig \
 COPY .devcontainer/make/zigbuild make/zigbuild
 RUN make zigbuild \
   TARGETPLATFORM=${BUILDPLATFORM}
-
-COPY .devcontainer/make/rustup make/rustup
-RUN make rustup
 
 COPY .devcontainer/make/rustc-target make/rustc-target
 RUN make rustc-target
