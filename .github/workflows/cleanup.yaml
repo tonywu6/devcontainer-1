@@ -15,7 +15,7 @@ jobs:
       - uses: snok/container-retention-policy@v2
         with:
           image-names: ${{github.event.repository.name}}
-          cut-off: two hours ago UTC-4
+          cut-off: 30 seconds ago UTC-4
           timestamp-to-use: created_at
           account-type: personal
           token: ${{ secrets.GITHUB_TOKEN }}
