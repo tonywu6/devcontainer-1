@@ -1,12 +1,16 @@
+EXTRA_CLEANUP ?= ":"
+
 .PHONY: all
 all:
-	if [ -x "$(command -v apt-get)" ]; then \
+	if [ -x "$$(command -v apt-get)" ]; then \
 		$(MAKE) cleanup-apt; \
-	elif [ -x "$(command -v yum)" ]; then \
+	elif [ -x "$$(command -v yum)" ]; then \
 		$(MAKE) cleanup-yum; \
 	fi
 
 	sudo rm -rf /tmp/*
+
+	$(EXTRA_CLEANUP)
 
 .PHONY: cleanup-apt
 cleanup-apt:

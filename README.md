@@ -27,11 +27,11 @@
 [Micromamba]: https://mamba.readthedocs.io/en/latest/index.html
 [Maturin]: https://www.maturin.rs/
 
-- [Go] [1.22](.devcontainer/make/go/Makefile)
+<!-- - [Go] [1.22](.devcontainer/make/go/Makefile)
 - [gvm]
 
 [Go]: https://go.dev/
-[gvm]: https://github.com/moovweb/gvm
+[gvm]: https://github.com/moovweb/gvm -->
 
 - [Protobuf] [25.3](.devcontainer/make/protoc/Makefile)
 - [Buf]

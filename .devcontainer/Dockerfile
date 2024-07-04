@@ -85,8 +85,8 @@ RUN make rustup
 # COPY .devcontainer/make/zig make/zig
 # RUN make zig
 
-COPY .devcontainer/make/go make/go
-RUN make go
+# COPY .devcontainer/make/go make/go
+# RUN make go
 
 COPY .devcontainer/make/bazelisk make/bazelisk
 RUN make bazelisk
@@ -123,6 +123,8 @@ RUN make fnm-node
 COPY --from=cross /root/.cargo/bin/maturin ${CARGO_HOME}/bin/maturin
 
 COPY --from=cross /root/.cargo/bin/wasm-pack ${CARGO_HOME}/bin/wasm-pack
+
+ARG EXTRA_CLEANUP
 
 COPY .devcontainer/make/cleanup make/cleanup
 RUN make cleanup
