@@ -47,6 +47,9 @@ then
   fi
 
   yum install -y epel-release
+
+  dnf config-manager --set-enabled powertools || true
+
   yum install -y \
     git \
     curl \
