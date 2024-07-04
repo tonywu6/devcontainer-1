@@ -5,13 +5,8 @@
 [Rust]: https://rustup.rs/
 [rust-bookworm]: https://mcr.microsoft.com/en-us/product/devcontainers/rust/tags
 
-- [Zig]
-
-[Zig]: https://ziglang.org/
-
 - [fnm]
 - [Node] [20](.devcontainer/make/node/Makefile)
-- [Deno]
 - [wasm-pack]
 
 [fnm]: https://github.com/Schniz/fnm
@@ -22,11 +17,13 @@
 
 - [Rye]
 - [Python] [3.12](.devcontainer/make/python/Makefile)
+- [uv]
 - [Micromamba]
 - [Maturin]
 
 [Rye]: https://rye.astral.sh/
 [Python]: https://www.python.org/
+[uv]: https://github.com/astral-sh/uv
 [Micromamba]: https://mamba.readthedocs.io/en/latest/index.html
 [Maturin]: https://www.maturin.rs/
 

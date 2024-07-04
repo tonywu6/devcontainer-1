@@ -76,11 +76,14 @@ ENV CARGO_HOME=${HOME}/.cargo
 
 ENV PATH=${CARGO_HOME}/bin:${PATH}
 
+COPY .devcontainer/make/oh-my-zsh make/oh-my-zsh
+RUN make oh-my-zsh
+
 COPY .devcontainer/make/rustup make/rustup
 RUN make rustup
 
-COPY .devcontainer/make/zig make/zig
-RUN make zig
+# COPY .devcontainer/make/zig make/zig
+# RUN make zig
 
 COPY .devcontainer/make/go make/go
 RUN make go
@@ -97,8 +100,8 @@ RUN make buf
 COPY .devcontainer/make/micromamba make/micromamba
 RUN make micromamba
 
-COPY .devcontainer/make/deno make/deno
-RUN make deno
+# COPY .devcontainer/make/deno make/deno
+# RUN make deno
 
 COPY --from=cross /root/.cargo/bin/uv ${CARGO_HOME}/bin/uv
 
@@ -121,7 +124,8 @@ COPY --from=cross /root/.cargo/bin/maturin ${CARGO_HOME}/bin/maturin
 
 COPY --from=cross /root/.cargo/bin/wasm-pack ${CARGO_HOME}/bin/wasm-pack
 
-RUN sudo rm -rf /tmp/*
+COPY .devcontainer/make/cleanup make/cleanup
+RUN make cleanup
 
 ENTRYPOINT [ "zsh" ]
 

@@ -23,6 +23,7 @@ install:
 
 	printf "\n" >>$(HOME)/.zshrc
 	printf 'source "%s/env"\n' $(RYE_HOME) >>$(HOME)/.zshrc
+	printf 'export VIRTUAL_ENV_DISABLE_PROMPT=1\n' >>$(HOME)/.zshrc
 
 
 .PHONY: rye

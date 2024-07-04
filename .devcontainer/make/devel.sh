@@ -12,6 +12,7 @@ then
     ${EXTRA_PACKAGES:-} \
     curl \
     unzip \
+    zip \
     make \
     cmake \
     ninja-build \
@@ -29,6 +30,7 @@ then
     ${EXTRA_PACKAGES:-} \
     curl \
     unzip \
+    zip \
     make \
     cmake \
     ninja-build \
