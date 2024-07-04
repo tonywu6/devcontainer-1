@@ -1,12 +1,11 @@
-ARG CROSSCOMPILE_IMAGE=rust:bookworm
 ARG DEVCONTAINER_IMAGE=mcr.microsoft.com/devcontainers/rust:bookworm
 
-FROM --platform=${BUILDPLATFORM} ${CROSSCOMPILE_IMAGE} AS cross
+FROM --platform=${BUILDPLATFORM} rust:bookworm AS cross
 
 WORKDIR /tmp
 
-COPY .devcontainer/make/devel.sh make/devel.sh
-RUN sh ./make/devel.sh
+COPY .devcontainer/make/cross.sh make/cross.sh
+RUN sh ./make/cross.sh
 
 COPY .devcontainer/Makefile .
 
@@ -58,10 +57,8 @@ ARG TARGETPLATFORM
 
 WORKDIR /tmp
 
-ARG EXTRA_PACKAGES
-
-COPY .devcontainer/make/devel.sh make/devel.sh
-RUN sh ./make/devel.sh
+COPY .devcontainer/make/devcontainer.sh make/devcontainer.sh
+RUN sh ./make/devcontainer.sh
 
 COPY .devcontainer/Makefile .
 
@@ -123,11 +120,6 @@ RUN make fnm-node
 COPY --from=cross /root/.cargo/bin/maturin ${CARGO_HOME}/bin/maturin
 
 COPY --from=cross /root/.cargo/bin/wasm-pack ${CARGO_HOME}/bin/wasm-pack
-
-ARG EXTRA_CLEANUP
-
-COPY .devcontainer/make/cleanup make/cleanup
-RUN make cleanup
 
 ENTRYPOINT [ "zsh" ]
 
