@@ -16,6 +16,7 @@ const presets = {
       DEFAULT_PYTHON_VERSION: "3.10",
       DEFAULT_NODE_VERSION: "16",
       DEFAULT_PNPM_VERSION: "8",
+      EXTRA_PACKAGES: "openssh-clients",
     },
     cross: {
       "linux/arm64": "quay.io/pypa/manylinux2014_aarch64:latest",
@@ -30,6 +31,7 @@ const presets = {
       DEFAULT_PYTHON_VERSION: "3.10",
       DEFAULT_NODE_VERSION: "20",
       DEFAULT_PNPM_VERSION: "9",
+      EXTRA_PACKAGES: "openssh-clients",
     },
     cross: {
       "linux/arm64": "quay.io/pypa/manylinux_2_28_aarch64:latest",

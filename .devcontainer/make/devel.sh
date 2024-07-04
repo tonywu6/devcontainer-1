@@ -9,6 +9,7 @@ then
   apt-get update -y
   apt-get upgrade -y
   apt-get install -y \
+    ${EXTRA_PACKAGES:-} \
     curl \
     unzip \
     make \
@@ -25,6 +26,7 @@ then
 
   yum install -y epel-release
   yum install -y \
+    ${EXTRA_PACKAGES:-} \
     curl \
     unzip \
     make \

@@ -58,6 +58,8 @@ ARG TARGETPLATFORM
 
 WORKDIR /tmp
 
+ARG EXTRA_PACKAGES
+
 COPY .devcontainer/make/devel.sh make/devel.sh
 RUN sh ./make/devel.sh
 
