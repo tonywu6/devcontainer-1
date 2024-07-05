@@ -18,8 +18,8 @@ const presets = {
       DEFAULT_PNPM_VERSION: "8",
     },
     cross: {
-      "linux/arm64": "arm64v8/centos:7",
-      "linux/amd64": "amd64/centos:7",
+      "linux/arm64": "quay.io/pypa/manylinux2014_aarch64:latest",
+      "linux/amd64": "quay.io/pypa/manylinux2014_x86_64:latest",
     },
   },
   manylinux_2_28: {
@@ -32,8 +32,8 @@ const presets = {
       DEFAULT_PNPM_VERSION: "9",
     },
     cross: {
-      "linux/arm64": "arm64v8/almalinux:8",
-      "linux/amd64": "amd64/almalinux:8",
+      "linux/arm64": "quay.io/pypa/manylinux_2_28_aarch64:latest",
+      "linux/amd64": "quay.io/pypa/manylinux_2_28_x86_64:latest",
     },
   },
 };
