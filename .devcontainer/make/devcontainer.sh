@@ -46,9 +46,13 @@ then
 
   fi
 
-  yum install -y epel-release
+  if command -v dnf >/dev/null 2>&1; then
 
-  dnf config-manager --set-enabled powertools || true
+    dnf config-manager --set-enabled powertools || true
+
+  fi
+
+  yum install -y epel-release
 
   yum install -y \
     git \
@@ -64,6 +68,14 @@ then
     sudo \
     openssh-clients \
     zsh
+
+  if grep -q 'VERSION_ID="7"' /etc/os-release; then
+
+    yum remove git -y
+    rpm -Uvh https://repo.ius.io/ius-release-el7.rpm
+    yum install git236 -y
+
+  fi
 
   yum clean all
 
