@@ -19,7 +19,7 @@ const presets = {
     },
     cross: {
       "linux/arm64": "quay.io/pypa/manylinux2014_aarch64:latest",
-      "linux/amd64": "quay.io/pypa/manylinux2014_x86_64:latest",
+      "linux/amd64": "amd64/centos:7",
     },
   },
   manylinux_2_28: {
