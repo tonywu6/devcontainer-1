@@ -46,13 +46,11 @@ then
 
   fi
 
-  if command -v dnf >/dev/null 2>&1; then
-
-    dnf config-manager --set-enabled powertools || true
-
-  fi
-
   yum install -y epel-release
+
+  if command -v dnf >/dev/null 2>&1; then
+    dnf config-manager --set-enabled powertools || true
+  fi
 
   yum install -y \
     git \
